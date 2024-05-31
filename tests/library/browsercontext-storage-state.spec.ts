@@ -223,9 +223,8 @@ it('should serialize storageState with lone surrogates', async ({ page, context,
   expect(storageState.origins[0].localStorage[0].value).toBe(String.fromCharCode(55934));
 });
 
-it('should work when service worker is intefering', async ({ page, context, server, isAndroid, isElectron }) => {
+it('should work when service worker is intefering', async ({ page, context, server, isAndroid }) => {
   it.skip(isAndroid);
-  it.skip(isElectron);
 
   server.setRoute('/', (req, res) => {
     res.writeHead(200, { 'content-type': 'text/html' });

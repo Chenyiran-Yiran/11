@@ -33,8 +33,7 @@ const it = base.extend<{ rewriteAndroidLoopbackURL(url: string): string }>({
   })
 });
 
-it('should fulfill intercepted response', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should fulfill intercepted response', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   await page.route('**/*', async route => {
     const response = await page.request.fetch(route.request());
@@ -55,10 +54,9 @@ it('should fulfill intercepted response', async ({ page, server, isElectron, isA
   expect(await page.evaluate(() => document.body.textContent)).toBe('Yo, page!');
 });
 
-it('should fulfill response with empty body', async ({ page, server, isAndroid, isElectron, browserName, browserMajorVersion }) => {
+it('should fulfill response with empty body', async ({ page, server, isAndroid, browserName, browserMajorVersion }) => {
   it.skip(browserName === 'chromium' && browserMajorVersion <= 91, 'Fails in Electron that uses old Chromium');
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
-  it.skip(isElectron, 'Protocol error (Storage.getCookies): Browser context management is not supported.');
   await page.route('**/*', async route => {
     const response = await page.request.fetch(route.request());
     await route.fulfill({
@@ -73,8 +71,7 @@ it('should fulfill response with empty body', async ({ page, server, isAndroid, 
   expect(await response.text()).toBe('');
 });
 
-it('should override with defaults when intercepted response not provided', async ({ page, server, browserName, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should override with defaults when intercepted response not provided', async ({ page, server, browserName, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   server.setRoute('/empty.html', (req, res) => {
     res.setHeader('foo', 'bar');
@@ -95,9 +92,7 @@ it('should override with defaults when intercepted response not provided', async
     expect(response.headers()).toEqual({ });
 });
 
-it('should fulfill with any response', async ({ page, server, isElectron, rewriteAndroidLoopbackURL }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
-
+it('should fulfill with any response', async ({ page, server, rewriteAndroidLoopbackURL }) => {
   server.setRoute('/sample', (req, res) => {
     res.setHeader('foo', 'bar');
     res.end('Woo-hoo');
@@ -117,8 +112,7 @@ it('should fulfill with any response', async ({ page, server, isElectron, rewrit
   expect(response.headers()['foo']).toBe('bar');
 });
 
-it('should support fulfill after intercept', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should support fulfill after intercept', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   const requestPromise = server.waitForRequest('/title.html');
   await page.route('**', async route => {
@@ -132,8 +126,7 @@ it('should support fulfill after intercept', async ({ page, server, isElectron, 
   expect(await response.text()).toBe(original);
 });
 
-it('should give access to the intercepted response', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should give access to the intercepted response', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   await page.goto(server.EMPTY_PAGE);
 
@@ -156,8 +149,7 @@ it('should give access to the intercepted response', async ({ page, server, isEl
   await Promise.all([route.fulfill({ response }), evalPromise]);
 });
 
-it('should give access to the intercepted response body', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should give access to the intercepted response body', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   await page.goto(server.EMPTY_PAGE);
 
@@ -194,8 +186,7 @@ it('should intercept multipart/form-data request body', async ({ page, server, a
   expect(request.postData()).toContain(fs.readFileSync(filePath, 'utf8'));
 });
 
-it('should fulfill intercepted response using alias', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should fulfill intercepted response using alias', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   await page.route('**/*', async route => {
     const response = await route.fetch();
@@ -206,8 +197,7 @@ it('should fulfill intercepted response using alias', async ({ page, server, isE
   expect(response.headers()['content-type']).toContain('text/html');
 });
 
-it('should support timeout option in route.fetch', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should support timeout option in route.fetch', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
 
   server.setRoute('/slow', (req, res) => {
@@ -224,8 +214,7 @@ it('should support timeout option in route.fetch', async ({ page, server, isElec
   expect(error.message).toContain(`Timeout 2000ms exceeded`);
 });
 
-it('should not follow redirects when maxRedirects is set to 0 in route.fetch', async ({ page, server, isAndroid, isElectron }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should not follow redirects when maxRedirects is set to 0 in route.fetch', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
 
   server.setRedirect('/foo', '/empty.html');
@@ -239,8 +228,7 @@ it('should not follow redirects when maxRedirects is set to 0 in route.fetch', a
   expect(await page.content()).toContain('hello');
 });
 
-it('should intercept with url override', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should intercept with url override', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   await page.route('**/*.html', async route => {
     const response = await route.fetch({ url: server.PREFIX + '/one-style.html' });
@@ -251,8 +239,7 @@ it('should intercept with url override', async ({ page, server, isElectron, isAn
   expect((await response.body()).toString()).toContain('one-style.css');
 });
 
-it('should intercept with post data override', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should intercept with post data override', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
   const requestPromise = server.waitForRequest('/empty.html');
   await page.route('**/*.html', async route => {
@@ -266,8 +253,7 @@ it('should intercept with post data override', async ({ page, server, isElectron
   expect((await request.postBody).toString()).toBe(JSON.stringify({ 'foo': 'bar' }));
 });
 
-it('should fulfill popup main request using alias', async ({ page, server, isElectron, isAndroid }) => {
-  it.fixme(isElectron, 'error: Browser context management is not supported.');
+it('should fulfill popup main request using alias', async ({ page, server, isAndroid }) => {
   it.skip(isAndroid, 'The internal Android localhost (10.0.0.2) != the localhost on the host');
 
   await page.context().route('**/*', async route => {
