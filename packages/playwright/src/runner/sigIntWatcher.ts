@@ -87,6 +87,7 @@ class FixedNodeSIGINTHandler {
   static _uninstall() {
     if (this._handlerInstalled) {
       this._handlerInstalled = false;
+      // @ts-expect-error fixed by https://github.com/electron/typescript-definitions/pull/264 (after Electron roll)
       process.off('SIGINT', this._dispatch);
     }
   }
