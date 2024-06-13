@@ -723,8 +723,7 @@ it('should emit event after navigation', async ({ page, server, browserName, bro
   expect(logs).toEqual(['filechooser', 'filechooser']);
 });
 
-it('should trigger listener added before navigation', async ({ page, server, browserMajorVersion, isElectron }) => {
-  it.skip(isElectron && browserMajorVersion <= 98);
+it('should trigger listener added before navigation', async ({ page, server }) => {
   // Add listener before cross process navigation.
   const chooserPromise = new Promise(f => page.once('filechooser', f));
   await page.goto(server.PREFIX + '/empty.html');

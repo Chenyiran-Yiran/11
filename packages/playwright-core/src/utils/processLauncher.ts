@@ -87,6 +87,7 @@ function sigintHandler() {
 
   if (sigintHandlerCalled) {
     // Resort to default handler from this point on, just in case we hang/stall.
+    // @ts-expect-error fixed by https://github.com/electron/typescript-definitions/pull/264 (after Electron roll)
     process.off('SIGINT', sigintHandler);
 
     // Upon second Ctrl+C, immediately kill browsers and exit.
@@ -125,6 +126,7 @@ function removeProcessHandlersIfNeeded() {
   if (killSet.size)
     return;
   for (const handler of installedHandlers)
+    // @ts-expect-error fixed by https://github.com/electron/typescript-definitions/pull/264 (after Electron roll)
     process.off(handler, processHandlers[handler]);
   installedHandlers.clear();
 }

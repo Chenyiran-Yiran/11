@@ -178,8 +178,7 @@ it('should return status text', async ({ page, server }) => {
   expect(response.statusText()).toBe('cool!');
 });
 
-it('should report all headers', async ({ page, server, browserName, platform, isElectron, browserMajorVersion }) => {
-  it.skip(isElectron && browserMajorVersion < 99, 'This needs Chromium >= 99');
+it('should report all headers', async ({ page, server, browserName, platform }) => {
   it.skip(browserName === 'webkit' && platform === 'win32', 'libcurl does not support non-set-cookie multivalue headers');
 
   const expectedHeaders = {
@@ -214,8 +213,7 @@ it('should report all headers', async ({ page, server, browserName, platform, is
   expect(actualHeaders).toEqual(expectedHeaders);
 });
 
-it('should report multiple set-cookie headers', async ({ page, server, isElectron, browserMajorVersion }) => {
-  it.skip(isElectron && browserMajorVersion < 99, 'This needs Chromium >= 99');
+it('should report multiple set-cookie headers', async ({ page, server }) => {
 
   server.setRoute('/headers', (req, res) => {
     res.writeHead(200, {
@@ -270,14 +268,14 @@ it('should behave the same way for headers and allHeaders', async ({ page, serve
   expect(allHeaders['name-b']).toEqual('v4');
 });
 
-it('should provide a Response with a file URL', async ({ page, asset, isAndroid, isElectron, isWindows, browserName, browserMajorVersion, mode }) => {
+it('should provide a Response with a file URL', async ({ page, asset, isAndroid, isWindows, browserName, browserMajorVersion, mode }) => {
   it.skip(isAndroid, 'No files on Android');
   it.skip(browserName === 'firefox', 'Firefox does return null for file:// URLs');
   it.skip(mode.startsWith('service'));
 
   const fileurl = url.pathToFileURL(asset('frames/two-frames.html')).href;
   const response = await page.goto(fileurl);
-  if (isElectron || (browserName === 'chromium' && browserMajorVersion >= 99) || (browserName === 'webkit' && isWindows))
+  if ((browserName === 'chromium' && browserMajorVersion >= 99) || (browserName === 'webkit' && isWindows))
     expect(response.status()).toBe(200);
   else
     expect(response.status()).toBe(0);
@@ -322,8 +320,8 @@ it('should return headers after route.fulfill', async ({ page, server }) => {
   });
 });
 
-it('should report if request was fromServiceWorker', async ({ page, server, isAndroid, isElectron }) => {
-  it.skip(isAndroid || isElectron);
+it('should report if request was fromServiceWorker', async ({ page, server, isAndroid }) => {
+  it.skip(isAndroid);
   {
     const res = await page.goto(server.PREFIX + '/serviceworkers/fetch/sw.html');
     expect(res.fromServiceWorker()).toBe(false);
