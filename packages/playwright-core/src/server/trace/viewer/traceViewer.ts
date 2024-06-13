@@ -144,6 +144,14 @@ export async function installRootRedirect(server: HttpServer, traceUrls: string[
   });
 }
 
+export async function runTraceViewerServer(traceUrls: string[], options: TraceViewerServerOptions & { headless?: boolean }, exitOnClose?: boolean) {
+  validateTraceUrls(traceUrls);
+  const server = await startTraceViewerServer(options);
+  await installRootRedirect(server, traceUrls, { ...options, webApp: 'embedded.html' });
+  process.stdout.write(server.urlPrefix('precise') + '\n');
+  return server;
+}
+
 export async function runTraceViewerApp(traceUrls: string[], browserName: string, options: TraceViewerServerOptions & { headless?: boolean }, exitOnClose?: boolean) {
   validateTraceUrls(traceUrls);
   const server = await startTraceViewerServer(options);
