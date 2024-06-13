@@ -192,6 +192,7 @@ test.describe('report tests', {
     annotation: [
       { type: 'issue', description: 'https://github.com/microsoft/playwright/issues/23180' },
       { type: 'performance', description: 'very slow test!' },
+      { type: 'performance', url: 'https://github.com/microsoft/playwright/issues/23180' },
     ],
   }, async ({ page }) => {
     // ...
