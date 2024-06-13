@@ -38,6 +38,7 @@ test('should contain text attachment', async ({ runUITest }) => {
   ]) {
     await page.getByText(`attach "${name}"`, { exact: true }).click();
     const downloadPromise = page.waitForEvent('download');
+    await expect(page.getByLabel('🎭')).toHaveText('hi tester!');
     await page.getByRole('link', { name: name }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe(name);

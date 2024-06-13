@@ -23,6 +23,27 @@ import type { AfterActionTraceEventAttachment } from '@trace/trace';
 
 type Attachment = AfterActionTraceEventAttachment & { traceUrl: string };
 
+type TextAttachmentProps = {
+  attachment: Attachment;
+};
+
+const TextAttachment: React.FunctionComponent<TextAttachmentProps> = ({ attachment }) => {
+  const [text, setText] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    fetch(attachmentURL(attachment)).then(response => response.text()).then(text => {
+      if (isMounted)
+        setText(text);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [attachment]);
+
+  return <textarea aria-label={attachment.name} className="attachment-item__text" disabled value={text!}/>;
+};
+
 export const AttachmentsTab: React.FunctionComponent<{
   model: MultiTraceModel | undefined,
 }> = ({ model }) => {
@@ -83,6 +104,9 @@ export const AttachmentsTab: React.FunctionComponent<{
     {[...attachments.values()].map((a, i) => {
       return <div className='attachment-item' key={`attachment-${i}`}>
         <a href={attachmentURL(a) + '&download'}>{a.name}</a>
+        { a.contentType === 'text/plain' &&
+          <TextAttachment attachment={a} />
+        }
       </div>;
     })}
   </div>;
